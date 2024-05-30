@@ -1,8 +1,6 @@
 import { randomBytes } from "node:crypto";
-class OTPService {
-  #generator;
-  constructor() {}
-  static generateOTP(): string {
+export default class OTPService {
+  static generateOTP(): number {
     let digitRange = 9;
     let N = 6;
     let otpArray = [];
@@ -12,19 +10,16 @@ class OTPService {
       otpArray.push(Math.floor(Math.random() * (digitRange + 1)));
     }
 
-    console.log(`initial array: `, otpArray);
     //we shuffle the array to increase randomness.
     const OTP_NUM_ARRAY = OTPService.shuffle(otpArray);
     let OTP = "";
-
-    console.log(`final_array array: `, OTP_NUM_ARRAY);
 
     OTP_NUM_ARRAY.forEach((digit) => {
       //convert each of the number in the array to string
       OTP += String(digit);
     });
 
-    return OTP;
+    return parseInt(OTP, 10);
   }
 
   static shuffle(digits: number[]): number[] {
@@ -44,4 +39,3 @@ class OTPService {
     arr[idx2] = temp;
   }
 }
-

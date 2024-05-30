@@ -10,6 +10,10 @@ const otpSchema = new Schema({
     ref: "User",
     required: [true, "userId field is required"],
   },
+  otp: {
+    type: Number,
+    required: [true, "otp field must be provided"]
+  }
 });
 
 const otp = model("Otp", otpSchema);
