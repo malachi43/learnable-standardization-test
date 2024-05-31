@@ -38,13 +38,7 @@ const storage = multer.diskStorage({
     const filename = `${Date.now()}${Math.round(Math.random() * 1e9)}${extname(
       originalname
     )}`;
-    cb(
-      new Error(
-        `${extname(
-          file.originalname
-        )} file extension not allowed. Image files only`
-      ), file.filename
-    );
+    cb(null, filename);
   },
 });
 
@@ -58,7 +52,9 @@ const upload = multer({
     if (isImage) {
       cb(null, true);
     } else {
-      cb(null, false);
+      cb(
+        new Error(`${extname(file.originalname)} not allowed. Image files only`)
+      );
     }
   },
 });
