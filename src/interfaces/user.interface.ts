@@ -1,4 +1,6 @@
+import { StringExpressionOperatorReturningString } from "mongoose";
 
-export  interface IUser{
+export interface IUser{
     email: string,
+    id: StringExpressionOperatorReturningString
 }

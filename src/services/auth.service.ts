@@ -1,10 +1,10 @@
 import User from "../models/user.model.js";
 import { IUser } from "../interfaces/user.interface.js";
 import otpService from "./generateOTP.service.js";
-import emailService from "./email.service.js";
+import EmailService from "./email.service.js";
 import Otp from "../models/otp.model.js";
 import { BadRequestError } from "../errors/badRequest.error.js";
-import { sign } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 
 class AuthService {
   #User;
@@ -15,7 +15,7 @@ class AuthService {
   async register(email: string): Promise<IUser> {
     let newUser = new this.#User({ email });
     newUser = await newUser.save();
-    newUser = { email: newUser.email };
+    newUser = { email: newUser.email, id: newUser.id };
     return newUser;
   }
 
@@ -27,23 +27,25 @@ class AuthService {
     if (!user) throw new BadRequestError(`email does not exist`, 400);
 
     const otp = otpService.generateOTP();
+    console.log(`generated otp: `, otp);
     const duration = 1000 * 60 * 5; //5 minutes.
     const otpExpirationTime = new Date(Date.now() + duration).getTime();
 
     let newOtp = new Otp({ otpExpirationTime, userId: user._id, otp });
     await newOtp.save();
 
-    const result = await emailService.sendOTPEmail({
+    const result = await EmailService.sendOTPEmail({
       from: "chibuikeuko@gmail.com",
       to: `${user.email}`,
       subject: "OTP verification",
       content: `provide this OTP:${otp} to complete your login process.`,
     });
-    console.log(result);
     return { success: true, msg: result };
   }
 
-  async createLoginToken(otp: number): Promise<string> {
+  async createLoginToken(
+    otp: number
+  ): Promise<{ token: string } | { msg: string }> {
     const userOtp = await Otp.findOne({ otp });
 
     if (!userOtp) throw new BadRequestError(`invalid OTP`, 400);
@@ -53,12 +55,15 @@ class AuthService {
     const now = Date.now();
 
     if (otpExpirationTime > now) {
-      const token = sign({ userId: userId.toString() }, process.env.JWT_SECRET);
-      await Otp.deleteOne({ userId });
-      return token;
+      const token = jwt.sign(
+        { userId: userId.toString() },
+        process.env.JWT_SECRET
+      );
+      await Otp.deleteOne({ otp: userOtp.otp });
+      return { token };
     } else {
-      const message = `your OTP has expired.`;
-      return message;
+      const msg = `your OTP has expired.`;
+      return { msg };
     }
   }
 }

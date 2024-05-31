@@ -4,10 +4,6 @@ import {
 } from "../interfaces/verificationEmail.interface.js";
 
 export default class EmailService {
-
-    constructor(){
-
-    }
   static async sendVerificationEmail({
     from = "",
     to = "",
