@@ -15,10 +15,8 @@ import { join, extname, dirname } from "node:path/posix";
 import multer from "multer";
 import isAuth from "./middlewares/isAuthenticated.middleware.js";
 
-
 const app = express();
 const PORT = process.env.PORT || 5000;
-
 
 app.use(helmet());
 app.use(cors());
@@ -65,10 +63,16 @@ app.post(
 );
 
 app.get(`${baseUrl}/api-key`, isAuth, AuthController.generateApiKey);
-app.post(`${baseUrl}/api-key/invalidate`, isAuth, AuthController.invalidateApiKey)
+app.post(
+  `${baseUrl}/api-key/invalidate`,
+  isAuth,
+  AuthController.invalidateApiKey
+);
 app.get(`${baseUrl}/otp`, AuthController.sendLoginOTP);
 app.post(`${baseUrl}/login/otp`, AuthController.createLoginToken);
 app.post(`${baseUrl}/register`, AuthController.register);
+app.get(`${baseUrl}/images`, ImageController.getAllImages);
+app.get(`${baseUrl}/images/:id`, ImageController.getSingleImage);
 
 app.use(notFound);
 app.use(errorHandler);

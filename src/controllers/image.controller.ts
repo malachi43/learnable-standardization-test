@@ -14,7 +14,7 @@ export default class ImageController {
     if (!req.file) {
       throw new BadRequestError(`please select a file to upload.`, 400);
     }
-    
+
     const { mimetype, filename } = req.file;
 
     const { userId } = req.user;
@@ -24,5 +24,16 @@ export default class ImageController {
       filename,
     });
     res.status(200).json({ data: imageDoc });
+  }
+
+  static async getSingleImage(req: Request, res: Response) {
+    const id = req.params?.id;
+    const image = await ImageService.getSingleImage(id);
+    res.status(200).json({ data: image });
+  }
+
+  static async getAllImages(req: Request, res: Response) {
+    const images = await ImageService.getAllImages();
+    res.status(200).json({ data: images });
   }
 }

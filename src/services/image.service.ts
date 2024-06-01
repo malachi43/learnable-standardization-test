@@ -2,6 +2,7 @@ import Image from "../models/userUpload.model.js";
 import { readFile } from "node:fs/promises";
 import { unlinkSync } from "node:fs";
 import { join } from "node:path";
+import { BadRequestError } from "../errors/badRequest.error.js";
 export default class ImageService {
   static convertToBase64(buffer: Buffer, mimetype: string): string {
     const b64 = Buffer.from(buffer).toString("base64");
@@ -26,5 +27,18 @@ export default class ImageService {
     const filePath = join("uploads", filename);
     unlinkSync(filePath);
     return { userId: newImage.userId, base64Image };
+  }
+
+  static async getAllImages(): Promise<{}[]> {
+    const images = await Image.find({});
+    return images;
+  }
+
+  static async getSingleImage(imageId: string): Promise<{}> {
+    const image = await Image.findOne({ _id: imageId });
+    if (!image) {
+      throw new BadRequestError(`no base64Image with this id:${imageId}`, 400);
+    }
+    return image;
   }
 }
