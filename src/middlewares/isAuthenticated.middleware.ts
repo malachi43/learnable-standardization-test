@@ -15,7 +15,6 @@ const isAuth = (req: ICustomRequest, res: Response, next: NextFunction) => {
     const bearerToken = req.headers["authorization"];
     const token = bearerToken.split(" ")[1];
     const userData = jwt.verify(token, process.env.JWT_SECRET);
-    console.log(`userData`, userData);
     req.user = userData;
     next();
   } catch (error) {

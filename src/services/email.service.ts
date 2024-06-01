@@ -1,31 +1,76 @@
+import dotenv from "dotenv"
+dotenv.config();
 import {
   IVerifyEmail,
   IOTPEmail,
-} from "../interfaces/verificationEmail.interface.js";
+} from "../interfaces/email.interface.js";
+import nodemailer from "nodemailer";
 
-export default class EmailService {
-  static async sendVerificationEmail({
-    from = "",
-    to = "",
-    subject = "",
-    content = "",
+function initTransporter() {
+  let transporter = nodemailer.createTransport({
+    service: process.env.NODEMAILER_SERVICE,
+    auth: {
+      user: process.env.NODEMAILER_USER,
+      pass: process.env.NODEMAILER_PASS,
+    },
+  });
+
+  return transporter;
+}
+
+class EmailService {
+  #transporter: { sendMail: (...args: any[]) => void };
+  constructor() {
+    this.#transporter = initTransporter();
+  }
+
+  async sendVerificationEmail({
+    to,
+    subject,
+    content,
   }: IVerifyEmail): Promise<string> {
+    let mailOptions = {
+      from: process.env.NODEMAILER_USER,
+      to,
+      subject,
+      text: content,
+    };
+
     return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve(`a verification email has been to ${to}`);
-      }, 3000);
+      this.#transporter.sendMail(
+        mailOptions,
+        function (error: Error, info: { response: string }) {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(`verification email has been sent to ${to}`);
+          }
+        }
+      );
     });
   }
-  static async sendOTPEmail({
-    from = "",
-    to = "",
-    subject = "",
-    content = "",
-  }: IOTPEmail): Promise<string> {
+
+  async sendOTPEmail({ to, subject, content }: IOTPEmail): Promise<string> {
+    let mailOptions = {
+      from: process.env.NODEMAILER_USER,
+      to,
+      subject,
+      text: content,
+    };
+
     return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve(`a OTP email has been to ${to}`);
-      }, 3000);
+      this.#transporter.sendMail(
+        mailOptions,
+        function (error: Error, info: { response: string }) {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(`an OTP has been sent to ${to}`);
+          }
+        }
+      );
     });
   }
 }
+
+export default new EmailService();

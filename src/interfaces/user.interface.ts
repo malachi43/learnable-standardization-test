@@ -2,5 +2,6 @@ import { StringExpressionOperatorReturningString } from "mongoose";
 
 export interface IUser{
     email: string,
-    id: StringExpressionOperatorReturningString
+    id: StringExpressionOperatorReturningString,
+    msg: string
 }
