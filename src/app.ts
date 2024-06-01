@@ -50,9 +50,7 @@ const upload = multer({
     if (isImage) {
       cb(null, true);
     } else {
-      cb(
-        new Error(`${extname(file.originalname)} not allowed. Image files only`)
-      );
+      cb(null, false);
     }
   },
 });

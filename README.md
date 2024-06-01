@@ -10,13 +10,12 @@ KRYPTONIAN APP
 - [Getting Started](#getting-started)
   - [Installation](#installation)
   - [Configuration](#configuration)
-- [Usage](#usage)
 - [API Endpoints](#api-endpoints)
-- [Deployment](#deployment)
+- [Documentation](#documentation)
 
 ## Introduction
 
-KRYPTONIAN APP is an API that can be used with any type of front end project that needs basic 2FA(2-Factor Authentication). The data are returned in JSON format.
+KRYPTONIAN APP is an API that can be used with any type of front end project that needs basic 2FA (2-Factor Authentication) with file upload (images only) functionality. The data are returned in JSON format.
 
 Feel free to enjoy it in your awesome projects!
 
@@ -25,13 +24,13 @@ This API was written using javascript.
 ## Features
 
 The KRYPTONIAN APP provide the following functionalites:
-- file upload with an API key without an auth token.
-- images stored in base64 format.
+- file upload using an API key only.
+- images are stored in base64 format.
 - register a user with email verification.
 - login a user using OTP (One Time Password) sent via email.
-- API keys generation.
-- API keys invalidation.
-- use of token.
+- use of authentication token to generate api key.
+- api key invalidation.
+
 
 ## Prerequisites
 
@@ -56,8 +55,6 @@ You need to have node js installed. [For installation visit the guide](https://n
 ## Install dependencies:
 
 ```bash
-Copy code
-cd project
 npm install
 npm run start:dev
 ```
@@ -67,14 +64,21 @@ npm run start:dev
 Create a .env file in the root directory of your project:
 
 ```bash
-Copy code
 MONGO_URI="your mongodb connection string"
 JWT_SECRET="your secret"
 NODEMAILER_PASS="your passkey"
-NODEMAILER_USER="your email"
-NODEMAILER_SERVICE="your service provider"
+NODEMAILER_USER="your email to send messages from"
+NODEMAILER_SERVICE="your service provider, e.g gmail"
 ```
+## API ENDPOINTS
+- Endpoint: https://learnable-standardization-test.onrender.com/api/v1/register [ REGISTER A USER ]  METHOD => POST.
+- Endpoint: https://learnable-standardization-test.onrender.com/api/v1/login/otp [ GENERATE TOKEN FOR USER ]  METHOD => POST
+- Endpoint: https://learnable-standardization-test.onrender.com/api/v1/images [ RETRIEVE ALL UPLOADED USER IMAGES ]  METHOD => GET
+- Endpoint: https://learnable-standardization-test.onrender.com/api/v1/images/{id} [ RETRIEVE A SPECIFIC UPLOADED USER IMAGE ]  METHOD => GET
+- Endpoint: https://learnable-standardization-test.onrender.com/api/v1/api-key [ GENERATE API-KEY FOR USER ]  METHOD => GET
+- Endpoint: https://learnable-standardization-test.onrender.com/api/v1/api-key/invalidate [ INVALIDATE USER API-KEY ]  METHOD => GET
+- Endpoint: https://learnable-standardization-test.onrender.com/api/v1/uploads [ UPLOADS USER FILE TO SERVER ]  METHOD => POST  NOTE: The "form" html tag must have the enctype="multipart/form-data" attribute and name attribute should be name="image_file"
 
-## Usage
+## Documentation
 
-See [documentation here]()
+See [documentation here](https://documenter.getpostman.com/view/23505718/2sA3QwbVKZ)
