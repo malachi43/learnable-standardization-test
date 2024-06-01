@@ -7,7 +7,7 @@
   "scripts": {
     "start:dev": "tsc-watch --onsuccess \"node build/app.js\"",
     "build": "tsc",
-    "start:prod": "node dist/app.js"
+    "start:prod": "node build/app.js"
   },
   "keywords": [],
   "author": "",
