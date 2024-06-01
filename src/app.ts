@@ -38,6 +38,7 @@ app.use(express.urlencoded({ extended: false }));
 //   },
 // });
 
+//we use memoryStorage because "render" prevents us from writing to the disk.
 const storage = multer.memoryStorage();
 
 const upload = multer({
@@ -56,7 +57,7 @@ const upload = multer({
   },
 });
 
-const baseUrl = `https://learnable-standardization-test.onrender.com/api/v1`;
+const baseUrl = `/api/v1`;
 
 app.use(morgan("common"));
 
