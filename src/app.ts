@@ -5,6 +5,7 @@ import "express-async-errors";
 import express from "express";
 import helmet from "helmet";
 import cors from "cors";
+import morgan from "morgan";
 import connectToDatabase from "./database/database.js";
 import AuthController from "./controllers/auth.controller.js";
 import ImageController from "./controllers/image.controller.js";
@@ -24,18 +25,20 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads");
-  },
-  filename: function (req, file, cb) {
-    const { originalname } = file;
-    const filename = `${Date.now()}${Math.round(Math.random() * 1e9)}${extname(
-      originalname
-    )}`;
-    cb(null, filename);
-  },
-});
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, "uploads");
+//   },
+//   filename: function (req, file, cb) {
+//     const { originalname } = file;
+//     const filename = `${Date.now()}${Math.round(Math.random() * 1e9)}${extname(
+//       originalname
+//     )}`;
+//     cb(null, filename);
+//   },
+// });
+
+const storage = multer.memoryStorage();
 
 const upload = multer({
   storage,
@@ -53,7 +56,9 @@ const upload = multer({
   },
 });
 
-const baseUrl = `/api/v1`;
+const baseUrl = `https://learnable-standardization-test.onrender.com/api/v1`;
+
+app.use(morgan("common"));
 
 app.post(
   `${baseUrl}/uploads`,
